@@ -76,7 +76,7 @@
 <div id="app">
   <div id="adTop">
     <button id="muteBtn" class="topctl" aria-label="mute">♪</button>
-    <div class="adbox live" id="adSlotTop"><!-- admax --><script src="https://adm.shinobi.jp/s/3b102534979e2452197ff0716bc5f861"></script><!-- admax --></div>
+    <div class="adbox live" id="adSlotTop"><!-- admax --><script src="https://adm.shinobi.jp/s/4bd2adfb85e085cc2ae72c6050c5ddcd"></script><!-- admax --></div>
     <button id="pauseBtn" class="topctl" aria-label="pause">❚❚</button>
   </div>
   <div id="stage">
@@ -101,7 +101,7 @@
         スマホ：なぞって移動 / 左下<b>SLOW</b>=低速 / 右下<b>BOMB</b><br>
         被弾ギリギリを<b>かすめる</b>とGRAZE加算＆ボム補充。残機ゼロでも<b>コンティニュー無制限</b>。
       </div>
-      <div class="adbox big live" id="adSlotBig"><!-- admax --><script src="https://adm.shinobi.jp/s/af3c6fa8ab6ca7bbac4dd70c0f40fe6a"></script><!-- admax --></div>
+      <div class="adbox big live" id="adSlotBig"><!-- admax --><script src="https://adm.shinobi.jp/s/e0a84ee8d671cb10307c8ca916e8099d"></script><!-- admax --></div>
     </div>
 
     <div id="bannerScreen" class="overlay hidden" style="background:rgba(1,5,12,.5)">
@@ -166,10 +166,10 @@ const SPR={}; let spritesReady=0, spritesTotal=0;
     for(let i=0;i<d.f.length;i++){ const im=new Image(); im.onload=()=>{spritesReady++;}; im.onerror=()=>{spritesReady++;}; im.src=d.f[i]; imgs.push(im); }
     SPR[k]={w:d.w,h:d.h,imgs}; }
 })();
-function drawSpr(key,frame,x,y,dh,rot,alpha,flip){ const s=SPR[key]; if(!s)return false;
+function drawSpr(key,frame,x,y,dh,rot,alpha,flip,ay,ax){ const s=SPR[key]; if(!s)return false;
   const im=s.imgs[frame|0]; if(!im||!im.complete||im.naturalWidth===0)return false;
   const dw=dh*(s.w/s.h); ctx.save(); if(alpha!=null)ctx.globalAlpha=alpha; ctx.translate(x,y);
-  if(rot)ctx.rotate(rot); if(flip)ctx.scale(-1,1); ctx.drawImage(im,-dw/2,-dh/2,dw,dh); ctx.restore(); return true; }
+  if(rot)ctx.rotate(rot); if(flip)ctx.scale(-1,1); ctx.drawImage(im,-dw*(ax==null?0.5:ax),-dh*(ay==null?0.5:ay),dw,dh); ctx.restore(); return true; }
 
 /* ============================================================ AUDIO ============================================================ */
 let actx=null,master=null,musicGain=null,sfxGain=null,muted=false;
@@ -290,47 +290,48 @@ const Music=(function(){
 
 /* ---- compositions (5 stage + 5 boss). bassPat: 8 chars/bar (L=low root). drums: chars per 16th. ---- */
 const D_STAGE='b.h.s.h.b.h.s.h.', D_DRIVE='k.h.s.h.k.k.s.h.', D_BOSS='k.hks.h.kkh.s.h.', D_DEEP='k...s...k...s...', D_EPIC='k.kks.h.kkh.sksk';
+const D_MARCH='k.h.s.h.k.h.s.hk', D_FRANTIC='kkh.s.khkkh.s.kh', D_STOMP='K...s...K...s.h.', D_DREAD='k...h...s...h...', D_FINAL='K.kks.hkK.khsksk';
 const MUSIC={
  s1:{ bpm:152, leadType:'square', bassType:'triangle', arp:true, arpType:'triangle', arpOct:5,
    chords:['D','A','Bm','G','D','A','G','A'],
    bassPat:'L..L..L.', drums:D_STAGE,
    lead:parseLead('D5/1 F#5/1 A5/1 F#5/1 E5/1 A4/1 C#5/1 E5/1 D5/1 B4/1 D5/1 F#5/1 G5/2 F#5/1 D5/1 D5/1 F#5/1 A5/.5 B5/.5 A5/1 E5/1 G5/1 F#5/1 E5/1 A5/2 r/1 A5/1') },
- b1:{ bpm:160, leadType:'sawtooth', bassType:'sawtooth', arp:true, arpType:'square', arpOct:5,
-   chords:['Bm','G','D','A','Bm','G','A','A'],
-   bassPat:'L.L.L.LL', drums:D_DRIVE,
-   lead:parseLead('B4/.5 B4/.5 D5/1 F#5/1 B5/.5 A5/.5 F#5/1 G5/1 E5/1 F#5/2 D5/.5 E5/.5 F#5/1 A5/1 B5/1 A5/.5 F#5/.5 E5/1 F#5/1 D5/2 r/2') },
+ b1:{ bpm:154, leadType:'square', bassType:'sawtooth', arp:true, arpType:'square', arpOct:5,
+   chords:['Bm','G','D','A','Bm','G','Em','F#','D','A','G','D','Em','A','Bm','F#'],
+   bassPat:'L.L.L.LL', drums:D_MARCH,
+   lead:parseLead('B4/1 F#5/1 B5/1 A5/1 F#5/1 D5/1 F#5/1 A5/1 G5/2 F#5/1 E5/1 D5/2 F#5/1 A5/1 B5/1 A5/1 F#5/1 B5/1 A5/2 F#5/1 D5/1 E5/1 F#5/1 G5/1 A5/1 F#5/2 r/1 A5/1') },
  s2:{ bpm:144, leadType:'triangle', bassType:'triangle', arp:true, arpType:'triangle', arpOct:5,
    chords:['A','E','F#m','D','A','E','D','E'],
    bassPat:'L..L.L..', drums:D_STAGE,
    lead:parseLead('A5/1 C#6/1 E6/1 C#6/1 B5/1 G#5/1 B5/1 E5/1 F#5/1 A5/1 C#6/.5 B5/.5 A5/1 D6/2 C#6/1 B5/1 A5/1 E5/1 F#5/1 G#5/1 A5/2 r/1 E5/1') },
- b2:{ bpm:162, leadType:'sawtooth', bassType:'sawtooth', arp:true, arpType:'square', arpOct:5,
-   chords:['F#m','D','A','E','F#m','D','E','E'],
-   bassPat:'L.LLL.L.', drums:D_DRIVE,
-   lead:parseLead('F#5/.5 F#5/.5 A5/1 C#6/1 F#6/.5 E6/.5 C#6/1 D6/1 B5/1 C#6/2 A5/.5 B5/.5 C#6/1 E6/1 F#6/1 E6/.5 C#6/.5 B5/1 A5/1 F#5/2 r/2') },
+ b2:{ bpm:168, leadType:'sawtooth', bassType:'sawtooth', arp:true, arpType:'sawtooth', arpOct:5,
+   chords:['F#m','F#m','D','E','F#m','C#','D','E','Bm','C#','D','E','F#m','D','C#','C#'],
+   bassPat:'LLL.LL.L', drums:D_FRANTIC,
+   lead:parseLead('F#5/.5 G#5/.5 A5/.5 B5/.5 C#6/1 A5/1 B5/.5 A5/.5 G#5/.5 A5/.5 F#5/1 E5/1 D6/1 C#6/.5 B5/.5 A5/1 B5/1 C#6/2 r/1 C#6/1 F#6/.5 E6/.5 C#6/.5 D6/.5 E6/1 C#6/1 B5/.5 C#6/.5 D6/.5 E6/.5 F#6/1 E6/1 D6/1 C#6/1 B5/.5 A5/.5 B5/1 F#5/2 r/2') },
  s3:{ bpm:150, leadType:'square', bassType:'triangle', arp:true, arpType:'square', arpOct:4,
    chords:['Em','A','Em','A','C','D','Em','D'],
    bassPat:'L.L.LL.L', drums:D_DRIVE,
    lead:parseLead('E5/.5 G5/.5 B5/1 A5/.5 G5/.5 E5/1 D5/1 E5/.5 G5/.5 B5/1 C6/1 B5/.5 A5/.5 G5/2 E5/.5 F#5/.5 G5/1 A5/1 B5/.5 D6/.5 B5/1 A5/1 G5/1 E5/2 r/1 D5/1') },
- b3:{ bpm:156, leadType:'sawtooth', bassType:'sawtooth', arp:true, arpType:'sawtooth', arpOct:4,
-   chords:['Em','C','G','D','Em','C','D','D'],
-   bassPat:'L.LLL.LL', drums:D_BOSS,
-   lead:parseLead('E5/.5 E5/.5 G5/1 B5/1 E6/.5 D6/.5 B5/1 C6/1 A5/1 B5/2 G5/.5 A5/.5 B5/1 D6/1 E6/1 D6/.5 B5/.5 A5/1 G5/1 E5/2 r/2') },
+ b3:{ bpm:140, leadType:'sawtooth', bassType:'sawtooth', arp:true, arpType:'triangle', arpOct:4,
+   chords:['Em','Em','C','D','Em','Em','Am','B','C','D','Em','B','Am','C','D','B'],
+   bassPat:'L..L.L..', drums:D_STOMP,
+   lead:parseLead('E4/1 E4/.5 G4/.5 B4/1 E4/1 D5/2 B4/1 G4/1 C5/1 B4/1 A4/.5 G4/.5 E4/1 B4/2 r/2 E5/1 D5/1 B4/1 C5/1 B4/.5 A4/.5 G4/1 E4/2 A4/1 B4/1 D5/1 E5/1 E4/2 r/1 B4/1') },
  s4:{ bpm:128, leadType:'triangle', bassType:'sawtooth', arp:false,
    chords:['Cm','Ab','Eb','Bb','Fm','G','Cm','Cm'],
    bassPat:'L...L...', drums:D_DEEP,
    lead:parseLead('G4/2 Eb5/1 D5/1 C5/2 G4/1 Ab4/1 Bb4/2 G4/1 Eb5/1 D5/2 C5/1 Bb4/1 C5/3 r/1 Eb5/1 D5/1 C5/2 G4/2 r/2') },
- b4:{ bpm:150, leadType:'sawtooth', bassType:'sawtooth', arp:true, arpType:'sawtooth', arpOct:4,
-   chords:['Cm','Ab','Bb','G','Cm','Ab','G','G'],
-   bassPat:'L.LLL.L.', drums:D_BOSS,
-   lead:parseLead('C5/.5 C5/.5 Eb5/1 G5/1 C6/.5 Bb5/.5 G5/1 Ab5/1 F5/1 G5/2 Eb5/.5 F5/.5 G5/1 Bb5/1 C6/1 Bb5/.5 G5/.5 F5/1 Eb5/1 C5/2 r/2') },
+ b4:{ bpm:132, leadType:'triangle', bassType:'sawtooth', arp:true, arpType:'sawtooth', arpOct:4,
+   chords:['Cm','Cm','Ab','Bb','Cm','Gm','Ab','G','Fm','Cm','Ab','Eb','Db','Bb','G','G'],
+   bassPat:'L...L...', drums:D_DREAD,
+   lead:parseLead('G4/2 Ab4/2 G4/1 F4/1 Eb4/2 C5/3 Bb4/1 Ab4/2 G4/2 Eb5/2 D5/1 C5/1 Bb4/2 Ab4/1 G4/1 F4/2 G4/1 Ab4/1 G4/2 r/2') },
  s5:{ bpm:138, leadType:'square', bassType:'sawtooth', arp:true, arpType:'triangle', arpOct:4,
    chords:['Dm','Bb','F','C','Gm','A','Dm','Dm'],
    bassPat:'L.L.L.L.', drums:D_DEEP,
    lead:parseLead('D5/1 A5/1 F5/1 D5/1 E5/2 C5/1 A4/1 Bb4/1 D5/1 F5/2 E5/1 D5/1 C5/1 A4/2 D5/1 F5/1 A5/.5 G5/.5 F5/1 E5/1 D5/2 r/1 A4/1') },
- b5:{ bpm:168, leadType:'sawtooth', bassType:'sawtooth', arp:true, arpType:'square', arpOct:5,
-   chords:['Dm','A','Dm','A','Bb','C','Dm','A'],
-   bassPat:'L.LLL.LL', drums:D_EPIC,
-   lead:parseLead('D5/.5 E5/.5 F5/1 A5/1 D6/.5 C6/.5 A5/1 Bb5/1 G5/1 A5/2 F5/.5 G5/.5 A5/1 C6/1 D6/1 C6/.5 A5/.5 G5/1 F5/1 E5/1 D5/2 A5/.5 A5/.5') }
+ b5:{ bpm:174, leadType:'sawtooth', bassType:'sawtooth', arp:true, arpType:'square', arpOct:5,
+   chords:['Dm','Dm','Bb','C','Dm','A','Bb','A','Gm','A','Dm','Bb','F','C','Dm','A'],
+   bassPat:'L.LLL.LL', drums:D_FINAL,
+   lead:parseLead('D5/1 A5/1 D6/1 C6/1 A5/1 F5/1 A5/1 D6/1 C6/2 A5/1 Bb5/1 A5/2 F5/1 D5/1 D6/1 C6/1 A5/1 D6/1 Bb5/2 A5/1 G5/1 F5/1 G5/1 A5/1 C6/1 D6/2 A5/.5 A5/.5 D5/1') },
 };
 
 /* ============================================================ GAME ============================================================ */
@@ -390,6 +391,18 @@ const EK={
  ab_rush    :{spr:'s5d',      size:52, hp:4,  sc:340, sp:150, beh:'rusher'},
  ab_diver   :{spr:'squidC',   size:50, hp:5,  sc:420, sp:90,  beh:'diver'},
  ab_bomber  :{spr:'heavyA',   size:62, hp:18, sc:1100,sp:28,  beh:'bomber'},
+ // ---- variety variants (reuse art, different behavior) ----
+ sky_dive   :{spr:'fighterA', size:44, hp:2,  sc:150, sp:120, beh:'diver'},
+ sky_strike :{spr:'fighterB', size:44, hp:3,  sc:210, sp:120, beh:'striker'},
+ sea_rush   :{spr:'squidA',   size:46, hp:3,  sc:260, sp:150, beh:'rusher'},
+ sea_strike :{spr:'s2fish',   size:44, hp:2,  sc:180, sp:120, beh:'striker'},
+ reef_diver :{spr:'squidB',   size:46, hp:3,  sc:300, sp:80,  beh:'diver'},
+ reef_turret:{spr:'turretD',  size:50, hp:8,  sc:560, sp:36,  beh:'turret'},
+ deep_strike:{spr:'squidC',   size:48, hp:4,  sc:340, sp:120, beh:'striker'},
+ deep_spin  :{spr:'turretD',  size:50, hp:7,  sc:560, sp:36,  beh:'spinner'},
+ ab_mine    :{spr:'s5b',      size:46, hp:3,  sc:300, sp:50,  beh:'mine'},
+ ab_floater :{spr:'s5a',      size:50, hp:6,  sc:420, sp:42,  beh:'floater'},
+ ab_crab    :{spr:'s5d',      size:50, hp:5,  sc:380, sp:52,  beh:'crab'},
 };
 
 /* ---------- bullets ---------- */
@@ -443,7 +456,7 @@ function spawnEnemy(kind,x,o){ o=o||{}; const t=EK[kind]; const from=o.from||'to
   const dh=t.size, dw=dh*(SPR[t.spr]?SPR[t.spr].w/SPR[t.spr].h:1);
   enemies.push({kind,spr:t.spr,beh:t.beh,x:px,y:py,size:dh,w:dw*0.62,h:dh*0.62,hp,maxhp:hp,sc:t.sc,sp:t.sp,
     base:px,baseY:py,from,dir,t:rnd(0,6),seed:Math.random()*9,fire:rnd(0.6,1.6),firing:0,drop:o.drop||null,
-    stopY:o.stopY||null,phase:'in',spin:rnd(0,6),flash:0,dx:0,dy:0,shot:false}); }
+    stopY:o.stopY||null,phase:'in',spin:rnd(0,6),flash:0,dx:0,dy:0,shot:false,age:0}); }
 function q(d,kind,x,o){ spawnQueue.push({d,kind,x,o:o||{}}); }
 function line(kind,n,o){ const m=54,gap=(W-2*m)/(n-1||1); for(let i=0;i<n;i++)q(i*0.12,kind,m+gap*i,o); }
 function vform(kind,n,o){ const cx=W/2; for(let i=0;i<n;i++){ const k=i-(n-1)/2; q(Math.abs(k)*0.1,kind,cx+k*42,o); } }
@@ -451,33 +464,52 @@ function streamE(kind,n,x,dl,o){ for(let i=0;i<n;i++)q(i*(dl||0.3),kind,x,o); }
 
 /* ---------- stage scripts (zig-zag flow per shmup design) ---------- */
 function buildScript(i){
-  const s=[],A=(at,fn)=>s.push({at,fn}); const D=diffKey;
-  const R={ // per-stage roster shorthands
-   0:{pop:'sky_glider',w:'sky_weaver',tur:'sky_turret',sp:'sky_spin',heavy:'sky_bomber'},
-   1:{pop:'sea_glider',w:'sea_fish',tur:'sea_turret',sp:'sea_jelly',heavy:'sea_diver',extra:'sea_jelly'},
-   2:{pop:'reef_rush',w:'reef_crab',tur:'reef_spin',sp:'reef_jelly',heavy:'reef_snipe'},
-   3:{pop:'deep_diver',w:'deep_jelly',tur:'deep_turret',sp:'deep_mine',heavy:'deep_bomber'},
-   4:{pop:'ab_rush',w:'ab_strike',tur:'ab_turret',sp:'ab_spin',heavy:'ab_bomber',extra:'ab_diver'},
+  const s=[]; let at=0.6; const A=(fn,gap)=>{ s.push({at,fn}); at+=gap; };
+  const R={
+   0:{pool:['sky_glider','sky_weaver','sky_strike','sky_dive'], tur:'sky_turret', sp:'sky_spin', heavy:'sky_bomber'},
+   1:{pool:['sea_glider','sea_fish','sea_strike','sea_rush'],    tur:'sea_turret', sp:'sea_jelly', heavy:'sea_diver'},
+   2:{pool:['reef_rush','reef_crab','reef_diver','reef_jelly'],  tur:'reef_spin', sp:'reef_turret', heavy:'reef_snipe'},
+   3:{pool:['deep_diver','deep_jelly','deep_strike','deep_mine'],tur:'deep_turret', sp:'deep_spin', heavy:'deep_bomber'},
+   4:{pool:['ab_rush','ab_strike','ab_diver','ab_crab','ab_mine'],tur:'ab_turret', sp:'ab_spin', heavy:'ab_bomber'},
   }[i];
-  // generic flowing wave structure, tuned by stage index
-  A(0.6,()=>line(R.pop,5));
-  A(2.6,()=>{ streamE(R.pop,5,80,0.16); streamE(R.pop,5,W-80,0.16); });
-  A(4.8,()=>vform(R.w,5));
-  A(6.8,()=>spawnEnemy(R.tur,110,{stopY:110,drop:'power'}));
-  A(7.0,()=>spawnEnemy(R.tur,W-110,{stopY:110}));
-  A(9.4,()=>{ for(let k=0;k<4;k++)q(k*0.18,R.w,60+k*40,{from:'left',y:90+k*22}); });
-  A(11.8,()=>spawnEnemy(R.sp,W/2,{stopY:150,drop:'shield'}));
-  A(13.6,()=>line(R.pop,6));
-  A(15.6,()=>{ for(let k=0;k<4;k++)q(k*0.18,R.w,W-60-k*40,{from:'right',y:90+k*22}); });
-  A(18.0,()=>spawnEnemy(R.heavy,W/2,{drop:'bomb'}));
-  A(20.4,()=>vform(R.w,7));
-  A(22.6,()=>{ spawnEnemy(R.tur,90,{stopY:120,drop:'power'}); spawnEnemy(R.sp,W-100,{stopY:140}); });
-  A(25.0,()=>{ streamE(R.pop,6,W/2,0.14); });
-  if(i>=1){ A(27.4,()=>{ spawnEnemy(R.sp,120,{stopY:130}); spawnEnemy(R.sp,W-120,{stopY:130}); spawnEnemy(R.tur,W/2,{stopY:110,drop:'power'}); });
-            A(30.2,()=>line(R.w,7)); A(32.6,()=>spawnEnemy(R.heavy,120,{drop:'life'})); A(32.8,()=>spawnEnemy(R.heavy,W-120,{drop:'bomb'})); }
-  if(i>=3){ A(35.4,()=>{ for(let k=0;k<5;k++)q(k*0.14,R.pop,0,{from:'bottom',x:60+k*60}); });
-            A(38.0,()=>{ spawnEnemy(R.tur,90,{stopY:120}); spawnEnemy(R.tur,W-90,{stopY:120}); spawnEnemy(R.sp,W/2,{stopY:150,drop:'power'}); });
-            A(40.6,()=>vform(R.w,9)); }
+  const P=R.pool, beh=k=>EK[k].beh;
+  const top =P.filter(k=>!['striker','rusher'].includes(beh(k)));        // descend into view / hover
+  const side=P.filter(k=>['striker','glider','weaver','diver'].includes(beh(k)));
+  const bott=P.filter(k=>['rusher','diver'].includes(beh(k)));           // come up from the bottom
+  const pick=(a,n)=>{ const arr=a.length?a:P; return arr[((n%arr.length)+arr.length)%arr.length]; };
+  const tk=n=>pick(top,n), sk=n=>pick(side,n), bk=n=>pick(bott,n);
+  const waves=[
+   ()=>line(tk(0),5),
+   ()=>{ streamE(tk(1),5,80,0.16); streamE(tk(1),5,W-80,0.16); },
+   ()=>vform(tk(2),5),
+   ()=>{ spawnEnemy(R.tur,110,{stopY:110,drop:'power'}); spawnEnemy(R.tur,W-110,{stopY:110}); },
+   ()=>{ for(let k=0;k<5;k++)q(k*0.16,sk(0),60+k*42,{from:'left',y:84+k*20}); },
+   ()=>spawnEnemy(R.sp,W/2,{stopY:150,drop:'shield'}),
+   ()=>line(tk(0),6),
+   ()=>{ for(let k=0;k<5;k++)q(k*0.16,sk(1),W-60-k*42,{from:'right',y:84+k*20}); },
+   ()=>spawnEnemy(R.heavy,W/2,{drop:'bomb'}),
+   ()=>vform(tk(1),7),
+   ()=>{ spawnEnemy(R.tur,90,{stopY:120,drop:'power'}); spawnEnemy(R.sp,W-100,{stopY:140}); },
+   ()=>streamE(tk(2),6,W/2,0.14),
+   ()=>{ spawnEnemy(R.sp,120,{stopY:130}); spawnEnemy(R.sp,W-120,{stopY:130}); spawnEnemy(R.tur,W/2,{stopY:110,drop:'power'}); },
+   ()=>line(tk(1),7),
+   ()=>{ for(let k=0;k<6;k++)q(k*0.13,tk(0),50+k*52,{}); },
+   ()=>{ spawnEnemy(R.heavy,120,{drop:'life'}); spawnEnemy(R.heavy,W-120,{drop:'bomb'}); },
+   ()=>{ for(let k=0;k<5;k++)q(k*0.14,bk(0),0,{from:'bottom',x:50+k*60}); },
+   ()=>vform(tk(2),9),
+   ()=>{ spawnEnemy(R.tur,90,{stopY:120}); spawnEnemy(R.tur,W-90,{stopY:120}); spawnEnemy(R.sp,W/2,{stopY:150,drop:'power'}); },
+   ()=>{ streamE(tk(1),7,90,0.14); streamE(tk(1),7,W-90,0.14); },
+   ()=>{ for(let k=0;k<5;k++)q(k*0.16,sk(0),60+k*42,{from:'left',y:80+k*22}); for(let k=0;k<5;k++)q(0.4+k*0.16,sk(1),W-60-k*42,{from:'right',y:80+k*22}); },
+   ()=>{ spawnEnemy(R.heavy,W/2,{drop:'power'}); spawnEnemy(R.sp,70,{stopY:130}); spawnEnemy(R.sp,W-70,{stopY:130}); },
+   ()=>vform(tk(0),9),
+   ()=>{ for(let k=0;k<6;k++)q(k*0.12,bk(0),0,{from:'bottom',x:40+k*64}); },
+   ()=>{ spawnEnemy(R.tur,80,{stopY:120,drop:'power'}); spawnEnemy(R.tur,W-80,{stopY:120}); spawnEnemy(R.sp,W/2,{stopY:160}); },
+   ()=>line(tk(1),8),
+  ];
+  const count=Math.min(waves.length, 18+i*2);   // S1≈18 waves … S5≈26 waves (longer descent)
+  for(let k=0;k<count;k++){ A(waves[k], 2.3 + (k%4===3?0.6:0) + i*0.04); }
+  // pre-boss surge (everyone)
+  A(()=>{ spawnEnemy(R.tur,80,{stopY:120,drop:'power'}); spawnEnemy(R.tur,W-80,{stopY:120,drop:'bomb'}); spawnEnemy(R.heavy,W/2,{drop:'life'}); }, 2.8);
   s.sort((a,b)=>a.at-b.at); return s;
 }
 
@@ -519,16 +551,17 @@ function updEnemy(e,dt){ e.t+=dt; e.spin+=dt*2.2; if(e.flash>0)e.flash-=dt; if(e
 
 /* ---------- bosses ---------- */
 const BOSSES={
- B_sky:{ name:'天空の番艦  オルトロス', hp:560, accent:'#7fd6ff', col:'#9bdcff', track:'b1',
-   phases:[ ['aim3','ring'], ['fan','spiralL','ring'], ['wall','aimrain','spiral2'] ] },
- B_tide:{ name:'潮渦の主  マレウス', hp:680, accent:'#46d4ff', col:'#7fe6ff', track:'b2',
-   phases:[ ['ring2','aim3'], ['spiral2','wall','fan'], ['laser','spiralL','aimrain'] ] },
- B_reef:{ name:'珊瑚甲殻  ガレオス', hp:820, accent:'#6affd0', col:'#a6ffe6', track:'b3',
-   phases:[ ['fan','flower'], ['cross','ring2','aimrain'], ['laser','spiral2','wall','flower'] ] },
- B_deep:{ name:'深淵の影  ノクス', hp:980, accent:'#7a4dff', col:'#b39bff', track:'b4',
-   phases:[ ['ring2','spiralL'], ['flower','wall','aimrain'], ['laser','cross','spiral2','ring2'] ] },
- B_abyss:{ name:'無音の底  クトゥラ＝マグナ', hp:1280, accent:'#ff4d8d', col:'#ff9bc4', track:'b5',
-   phases:[ ['flower','spiralL','aimrain'], ['laser','cross','ring2','wall'], ['spiral2','flower','laser','aimrain','wall'] ] },
+ B_sky:{ name:'天空の番艦  オルトロス', hp:620, accent:'#7fd6ff', col:'#9bdcff', track:'b1',
+   phases:[ ['cannon','vwall'], ['cannon','sweep','ring'], ['salvo','sweep','vwall','cannon'] ] },
+ B_tide:{ name:'潮渦の主  マレウス', hp:740, accent:'#46d4ff', col:'#7fe6ff', track:'b2',
+   phases:[ ['needles','slowring'], ['bubbles','needles','aim3'], ['lurespiral','bubbles','needles','slowring'] ] },
+ B_reef:{ name:'珊瑚甲殻  ガレオス', hp:900, accent:'#6affd0', col:'#a6ffe6', track:'b3',
+   phases:[ ['pincer','ring'], ['columns','pincer','aim3'], ['stompwave','columns','pincer','flower'] ] },
+ B_deep:{ name:'深淵の影  ノクス', hp:1060, accent:'#7a4dff', col:'#b39bff', track:'b4',
+   phases:[ ['darkorbs','whip'], ['whip','reversespiral','aimrain'], ['lantern','darkorbs','reversespiral','whip'] ] },
+ B_abyss:{ name:'無音の底  クトゥラ＝マグナ', hp:2000, accent:'#ff4d8d', col:'#ff9bc4', track:'b5',
+   phases:[ ['galaxy','aim3'], ['stormflower','crosslaser','ring2'], ['galaxy','whip','needles','wall'],
+            ['crosslaser','stormflower','omni'], ['omni','galaxy','crosslaser','stormflower','needles'] ] },
 };
 function spawnBoss(){ const S=STAGES[stageIdx]; const def=BOSSES[S.boss];
   const hp=Math.round(def.hp*DIFFS[diffKey].bossHp);
@@ -540,21 +573,44 @@ function bossBegin(){ $('warnScreen').classList.add('hidden'); state='play'; las
 function bossPhase(b,n){ b.phaseN=n; b.atks=b.def.phases[n-1]; b.atkIdx=-1; b.atk=0.8; b.stream=null;
   beams.length=0; cancelBullets(); b.flash=0.6; shake=reduce?6:18; slow=0.3; hitstop=0.06;
   burst(b.x,b.y,b.accent,34); bombRings.push({x:b.x,y:b.y,t:0}); sfx.phase(); }
-function bossFire(b){ const pf=1+(b.phaseN-1)*0.16, cdm=[1,0.82,0.66][b.phaseN-1];
-  const bc=n=>Math.max(3,Math.round(CNT(n)*pf)); const x=b.x,y=b.y+24; const c1=b.accent,c2='#ff4d8d',c3='#ffd24d',c4='#46d4ff';
+function bossFire(b){ const pf=1+(b.phaseN-1)*0.14, cdm=Math.max(0.5,1-(b.phaseN-1)*0.13);
+  const bc=n=>Math.max(3,Math.round(CNT(n)*pf)); const x=b.x,y=b.y+24;
+  const c1=b.accent,c2='#ff4d8d',c3='#ffd24d',c4='#46d4ff',c5='#8f7dff';
   b.atkIdx=(b.atkIdx+1)%b.atks.length; const id=b.atks[b.atkIdx];
-  if(id==='aim3'){ aimed(x,y,SP(170),bc(3),0.22,{c:c2}); b.atk=FR(0.95)*cdm; sfx.hit(); }
-  else if(id==='ring'){ ring(x,b.y+8,bc(16),SP(150),b.spin,{c:c1}); b.atk=FR(1.15)*cdm; }
-  else if(id==='ring2'){ ring(x,b.y+8,bc(18),SP(150),b.spin,{c:c1}); ring(x,b.y+8,bc(14),SP(110),-b.spin,{c:c4}); b.atk=FR(1.25)*cdm; }
-  else if(id==='fan'){ aimed(x,y,SP(165),bc(7),0.16,{c:c2}); b.atk=FR(0.9)*cdm; sfx.hit(); }
-  else if(id==='wall'){ const gap=2+Math.floor(rnd(0,7)); wall(x,b.y,bc(14),gap,SP(150),{c:c1}); b.atk=FR(1.1)*cdm; }
-  else if(id==='cross'){ for(let k=0;k<4;k++){ const a=k*Math.PI/2+b.spin; for(let j=-2;j<=2;j++)eb(x,b.y, Math.cos(a+j*0.1)*SP(160),Math.sin(a+j*0.1)*SP(160),{c:c4}); } b.atk=FR(1.0)*cdm; }
-  else if(id==='flower'){ const k=bc(10); for(let i=0;i<k;i++){ const a=i/k*TAU+b.spin; const sp=SP(120+Math.sin(b.t*3)*40); eb(x,b.y,Math.cos(a)*sp,Math.sin(a)*sp,{c:c2,r:6}); } b.atk=FR(0.5)*cdm; }
-  else if(id==='spiralL'){ b.stream={left:bc(26),every:0.045,t:0,cd:1.0,step:s=>{ s.spin+=0.32; eb(s.x,s.y+8,Math.cos(s.spin)*SP(165),Math.sin(s.spin)*SP(165),{c:c3}); }}; }
-  else if(id==='spiral2'){ b.stream={left:bc(30),every:0.05,t:0,cd:1.0,step:s=>{ s.spin+=0.4; for(let a=0;a<2;a++){const an=s.spin+a*Math.PI; eb(s.x,s.y+8,Math.cos(an)*SP(160),Math.sin(an)*SP(160),{c:c1});} }}; }
-  else if(id==='aimrain'){ b.stream={left:bc(7),every:0.12,t:0,cd:0.95,step:s=>{ aimed(s.x,s.y+18,SP(185),bc(3),0.2,{c:c2}); sfx.hit(); }}; }
-  else if(id==='laser'){ const xs=[player.x,player.x-92,player.x+92]; const cnt=b.phaseN>=3?3:2;
-    for(let i=0;i<cnt;i++){ const bx=clamp(xs[i],26,W-26); beams.push({x:bx,warn:0.9,on:0,w:26}); } b.atk=FR(1.8)*cdm; sfx.hit(); }
+  switch(id){
+   /* ---- shared ---- */
+   case 'aim3': aimed(x,y,SP(175),bc(3),0.22,{c:c2}); b.atk=FR(0.9)*cdm; sfx.hit(); break;
+   case 'ring': ring(x,b.y+8,bc(16),SP(150),b.spin,{c:c1}); b.atk=FR(1.1)*cdm; break;
+   case 'ring2': ring(x,b.y+8,bc(18),SP(150),b.spin,{c:c1}); ring(x,b.y+8,bc(14),SP(112),-b.spin,{c:c4}); b.atk=FR(1.2)*cdm; break;
+   case 'wall': wall(x,b.y,bc(14),2+Math.floor(rnd(0,7)),SP(150),{c:c1}); b.atk=FR(1.05)*cdm; break;
+   case 'flower': { const k=bc(10); for(let i=0;i<k;i++){ const a=i/k*TAU+b.spin; const sp=SP(120+Math.sin(b.t*3)*40); eb(x,b.y,Math.cos(a)*sp,Math.sin(a)*sp,{c:c2,r:6}); } b.atk=FR(0.5)*cdm; } break;
+   case 'aimrain': b.stream={left:bc(7),every:0.12,t:0,cd:0.95,step:s=>{ aimed(s.x,s.y+18,SP(185),bc(3),0.2,{c:c2}); sfx.hit(); }}; break;
+   /* ---- B1 battleship: precise mechanical fire ---- */
+   case 'cannon': for(const gx of [x-44,x+44]) aimed(gx,y,SP(205),bc(4),0.12,{c:c4,r:6}); sfx.hit(); b.atk=FR(0.82)*cdm; break;
+   case 'sweep': { const dir=Math.random()<.5?1:-1; b.stream={left:bc(22),every:0.05,cd:1.1,a:-0.72*dir,da:0.066*dir,t:0,step:s=>{ const a=Math.PI/2+s.stream.a; eb(x,y,Math.cos(a)*SP(185),Math.sin(a)*SP(185),{c:c3,r:5}); s.stream.a+=s.stream.da; }}; } break;
+   case 'vwall': { const n=bc(7); for(let k=1;k<=n;k++){ const sp=SP(125),ox=k*0.17; eb(x,b.y,-sp*ox,sp,{c:c1}); eb(x,b.y,sp*ox,sp,{c:c1}); } b.atk=FR(1.15)*cdm; } break;
+   case 'salvo': b.stream={left:5,every:0.17,cd:1.2,t:0,step:s=>{ aimed(x,y,SP(195),bc(5),0.14,{c:c2}); sfx.hit(); }}; break;
+   /* ---- B2 anglerfish: lures, bubbles, fangs ---- */
+   case 'needles': for(let k=0;k<bc(5);k++) needle(x,y,SP(230)+k*9,{c:c2}); sfx.hit(); b.atk=FR(0.88)*cdm; break;
+   case 'slowring': ring(x,b.y+8,bc(20),SP(80),b.spin,{c:c4,r:7}); b.atk=FR(1.3)*cdm; break;
+   case 'bubbles': b.stream={left:bc(11),every:0.09,cd:1.0,t:0,step:s=>{ const a=Math.PI/2+rnd(-0.65,0.65),sp=SP(rnd(80,150)); eb(x,b.y,Math.cos(a)*sp,Math.sin(a)*sp,{c:c4,r:rnd(4,7)}); }}; break;
+   case 'lurespiral': b.stream={left:bc(34),every:0.04,cd:1.0,t:0,step:s=>{ s.spin+=0.36; for(let a=0;a<3;a++){ const an=s.spin+a*TAU/3; eb(x,b.y+8,Math.cos(an)*SP(150),Math.sin(an)*SP(150),{c:c2}); } }}; break;
+   /* ---- B3 crab: claws & columns ---- */
+   case 'pincer': arc(x-40,b.y,Math.PI*0.05,Math.PI*0.55,bc(6),SP(150),{c:c3}); arc(x+40,b.y,Math.PI*0.45,Math.PI*0.95,bc(6),SP(150),{c:c3}); sfx.hit(); b.atk=FR(1.05)*cdm; break;
+   case 'columns': { const n=bc(7),gap=1+Math.floor(rnd(0,n-2)); for(let k=0;k<n;k++){ if(k===gap)continue; const cx=40+k*((W-80)/(n-1)); for(let r=0;r<3;r++) eb(cx,b.y-r*22,0,SP(150),{c:c1}); } b.atk=FR(1.2)*cdm; } break;
+   case 'stompwave': ring(x,b.y+8,bc(24),SP(95),b.spin,{c:c4}); aimed(x,y,SP(210),bc(3),0.16,{c:c2}); shake=reduce?4:9; b.atk=FR(1.3)*cdm; break;
+   /* ---- B4 shadow: whips, dark orbs, lantern ---- */
+   case 'darkorbs': aimed(x,y,SP(95),bc(5),0.26,{c:c5,r:9}); b.atk=FR(1.15)*cdm; break;
+   case 'whip': { const dir=Math.random()<.5?1:-1; b.stream={left:bc(26),every:0.04,cd:1.0,a:0,t:0,step:s=>{ const a=Math.PI/2+Math.sin(s.stream.a)*1.1*dir; s.stream.a+=0.22; eb(x,y,Math.cos(a)*SP(165),Math.sin(a)*SP(165),{c:c5,r:5}); }}; } break;
+   case 'reversespiral': b.stream={left:bc(30),every:0.045,cd:1.0,t:0,step:s=>{ s.spin-=0.34; for(let a=0;a<2;a++){ const an=s.spin+a*Math.PI; eb(x,b.y+8,Math.cos(an)*SP(150),Math.sin(an)*SP(150),{c:c1}); } }}; break;
+   case 'lantern': beams.push({x:clamp(player.x,26,W-26),warn:1.0,on:0,w:30}); scatter(x,b.y,bc(10),SP(60),SP(140),{c:c5}); b.atk=FR(1.7)*cdm; sfx.hit(); break;
+   /* ---- B5 abyss final: everything ---- */
+   case 'galaxy': b.stream={left:bc(46),every:0.03,cd:0.9,t:0,step:s=>{ s.spin+=0.3; for(let a=0;a<3;a++){ const an=s.spin+a*TAU/3; eb(x,b.y+8,Math.cos(an)*SP(160),Math.sin(an)*SP(160),{c:c2}); const an2=-s.spin*1.1+a*TAU/3; eb(x,b.y+8,Math.cos(an2)*SP(118),Math.sin(an2)*SP(118),{c:c4}); } }}; break;
+   case 'stormflower': { const k=bc(14); for(let i=0;i<k;i++){ const a=i/k*TAU+b.spin,sp=SP(110+Math.sin(b.t*4+i)*55); eb(x,b.y,Math.cos(a)*sp,Math.sin(a)*sp,{c:c2,r:6}); } b.atk=FR(0.42)*cdm; } break;
+   case 'crosslaser': { const base=player.x,cnt=Math.min(4,2+(b.phaseN>=3?1:0)+(b.phaseN>=5?1:0)),offs=[0,-100,100,-50]; for(let i=0;i<cnt;i++) beams.push({x:clamp(base+offs[i],26,W-26),warn:0.85,on:0,w:26}); ring(x,b.y+8,bc(16),SP(120),b.spin,{c:c4}); b.atk=FR(1.7)*cdm; sfx.hit(); } break;
+   case 'omni': ring(x,b.y+8,bc(20),SP(135),b.spin,{c:c1}); aimed(x,y,SP(200),bc(3),0.18,{c:c2}); b.stream={left:bc(18),every:0.05,cd:1.2,t:0,step:s=>{ s.spin+=0.38; eb(x,b.y+8,Math.cos(s.spin)*SP(150),Math.sin(s.spin)*SP(150),{c:c3}); }}; break;
+   default: aimed(x,y,SP(170),bc(3),0.2,{c:c2}); b.atk=FR(1.0)*cdm;
+  }
 }
 function updateBoss(dt){ const b=boss; b.t+=dt; b.spin+=dt*1.4; if(b.flash>0)b.flash-=dt;
   b.hpShown += (b.hp/b.maxhp - b.hpShown)*Math.min(1,dt*6);
@@ -565,10 +621,10 @@ function updateBoss(dt){ const b=boss; b.t+=dt; b.spin+=dt*1.4; if(b.flash>0)b.f
   if(b.phase==='in'){ b.y+=46*dt; if(b.y>=98){b.y=98;b.phase='fight';b.atk=0.7;} return; }
   b.x+=b.dir*(46+(b.phaseN-1)*16)*dt; if(b.x<72){b.x=72;b.dir=1;} if(b.x>W-72){b.x=W-72;b.dir=-1;}
   if(b.stream){ b.stream.t-=dt; let guard=0; while(b.stream.t<=0&&b.stream.left>0&&guard++<60){ b.stream.step(b); b.stream.left--; b.stream.t+=b.stream.every; }
-    if(b.stream.left<=0){ b.atk=FR(b.stream.cd)*[1,0.82,0.66][b.phaseN-1]; b.stream=null; } }
+    if(b.stream.left<=0){ b.atk=FR(b.stream.cd)*Math.max(0.5,1-(b.phaseN-1)*0.13); b.stream=null; } }
   else { b.atk-=dt; if(b.atk<=0)bossFire(b); }
   for(let j=bullets.length-1;j>=0;j--){ const bl=bullets[j]; if(Math.abs(b.x-bl.x)<b.w*0.42&&Math.abs(b.y-bl.y)<b.h*0.42){ bullets.splice(j,1); b.hp--; b.flash=Math.max(b.flash,.05); burst(bl.x,bl.y,'#46d4ff',2); if(b.hp%14===0)sfx.hit(); } }
-  const fr=b.hp/b.maxhp; if(b.phaseN===1&&fr<=0.66)bossPhase(b,2); else if(b.phaseN===2&&fr<=0.33)bossPhase(b,3);
+  const P=b.def.phases.length, fr=b.hp/b.maxhp; if(b.phaseN<P && fr<=(P-b.phaseN)/P) bossPhase(b,b.phaseN+1);
   if(invuln<=0 && Math.abs(b.x-player.x)<b.w*0.34 && Math.abs(b.y-player.y)<b.h*0.34) hurt();
   if(b.hp<=0) bossDown(); }
 function bossDown(){ burst(boss.x,boss.y,'#ffd24d',54); flash=.7; shake=reduce?6:22; slow=0.8; hitstop=0.12; sfx.bigboom();
@@ -638,8 +694,9 @@ function update(dt){ time+=dt; stageTime+=dt;
     if(scriptIdx>=script.length && enemies.length===0 && spawnQueue.length===0) spawnBoss(); }
 
   // enemies
-  for(let i=enemies.length-1;i>=0;i--){ const e=enemies[i]; updEnemy(e,dt);
-    if(e.dead||e.y>H+60||e.y<-90||e.x<-90||e.x>W+90){ enemies.splice(i,1); continue; }
+  for(let i=enemies.length-1;i>=0;i--){ const e=enemies[i]; updEnemy(e,dt); e.age+=dt;
+    if(e.dead||e.y>H+60||e.y<-90||e.x<-90||e.x>W+90 ||
+       (e.age>4 && (e.x<-6||e.x>W+6||e.y<-6||e.y>H+6))){ enemies.splice(i,1); continue; }
     for(let j=bullets.length-1;j>=0;j--){ const b=bullets[j];
       if(Math.abs(e.x-b.x)<(e.w+b.w)/2 && Math.abs(e.y-b.y)<(e.h+b.h)/2){ bullets.splice(j,1); e.hp--; e.flash=.09; burst(b.x,b.y,'#46d4ff',2);
         if(e.hp<=0){ onKill(e); enemies.splice(i,1); break; } else sfx.hit(); } }
@@ -652,10 +709,10 @@ function update(dt){ time+=dt; stageTime+=dt;
 
   // enemy bullets + graze
   const hitR=2.4, grR=14;
-  for(let i=ebullets.length-1;i>=0;i--){ const b=ebullets[i]; b.x+=b.vx*dt; b.y+=b.vy*dt;
+  for(let i=ebullets.length-1;i>=0;i--){ const b=ebullets[i]; if(!b)continue; b.x+=b.vx*dt; b.y+=b.vy*dt;
     if(b.y>H+16||b.y<-16||b.x<-16||b.x>W+16){ ebullets.splice(i,1); continue; }
     const dx=player.x-b.x,dy=player.y-b.y,d2=dx*dx+dy*dy;
-    if(invuln<=0 && d2<(hitR+b.r)*(hitR+b.r)){ ebullets.splice(i,1); hurt(); continue; }
+    if(invuln<=0 && d2<(hitR+b.r)*(hitR+b.r)){ ebullets.splice(i,1); hurt(); break; }
     if(!b.g && d2<(grR+b.r)*(grR+b.r)){ b.g=true; graze++; grazeMeter++; addScore(30); spark(b.x,b.y,'#bff7ec'); sfx.graze();
       if(grazeMeter>=120){ grazeMeter=0; bombs=Math.min(6,bombs+1); updBomb(); } } }
   if(ebullets.length>760)ebullets.splice(0,ebullets.length-760);
@@ -705,7 +762,7 @@ function drawFishPlayer(){ const x=player.x,y=player.y; const focus=isFocus();
   if(player.shield){ ctx.strokeStyle='rgba(70,212,255,'+(0.5+0.3*Math.sin(time*10))+')'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,y,20,0,TAU); ctx.stroke(); }
   // thrust frame by speed (frame2 big when moving fast & not focus)
   const spd=Math.abs(player.vx)+(touchOn?40:0); const fr = focus?0 : (spd>120?2: (spd>10?1:0));
-  const ok=drawSpr('player',fr,x,y,38, player.roll*0.18, 1);
+  const ok=drawSpr('player',fr,x,y,40, player.roll*0.18, 1, false, 0.26, 0.59); // body centered on (x,y)=hit point
   if(!ok){ ctx.fillStyle='#ff8a3d'; ctx.beginPath(); ctx.ellipse(x,y,9,12,0,0,TAU); ctx.fill(); }
   // hitbox dot
   if(focus){ ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x,y,4.4,0,TAU); ctx.fill(); ctx.fillStyle='#ff3355'; ctx.beginPath(); ctx.arc(x,y,2.4,0,TAU); ctx.fill(); }
